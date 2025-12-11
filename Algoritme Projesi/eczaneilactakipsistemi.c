@@ -1,6 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h> // Random ve dosya işlemleri için
+#include <string.h> // String işlemleri için
+#include <time.h>   // Rastgele sayı üretimi için saat bilgisini kullanacağız
 #include <windows.h>
 #include <stdbool.h>
+
 // BAS dizisi için indeksler (0, 1, 2)
 #define BARKOD 0
 #define ISIM   1
@@ -25,21 +29,65 @@
 
 struct ilac
 {
-   // char barkod[20];
-   // char ad [50];
-    //char skt [15];
-
     char BAS[100][3][50]; // Barkod , Ad , SKt
     //Max 100 ilaç her ilacın 3 özelliği var
     // 0: BArkod 1:AD 2:SKT
     int SSR[100][3]; // Stok,Soguk zincir, recetürü
     float fiyat[100];
 };
-tutorialFunc(){
 
-    printf("Burda nasıl yapılcağını anlat");
+struct ilac eczane ; // Ramde alan rezerve ediyor
+int toplamİlacSayisi = 0;
+
+void barkodÜret(char* hedefString){ 
+    char temp[13] = ""; // BArkodu daha sağlıklı oluşturmak için 
+    for (int i = 0; i < 12; i++)
+    {
+        int rakam = rand() %10; // 0-9 arasında sayı üretir %10 yaptığımızd birler basamığını alır sayının
+        char rakamStr[2];
+        // Rakamı sayıyaya çevirir içinde 2 olmasının sebebi nokta mantığı görmesi
+        // örnek olarak rastgele üretien sayı 5 olsun bunu 5. şeklinde okur 2 burda 2.harfi temsil ediyor
+        sprintf(rakamStr,"%d",rakam);
+        //Dönüştürücü gibi c# daki parse to int mantığı sadece daha farklı (Nereye,nasıl,Neyi) mantığı ile çalışır
+        strcat(temp,rakamStr);
+    }
+    strcpy(hedefString, temp);
 }
-secim1İlacgiris(){
+
+void DosyayaKaydet(){
+ FILE *fp = fopen("ilaclar.txt","w");    
+ if (fp == NULL)
+ {
+    return;
+ }
+ for (int i = 0; i < toplamİlacSayisi; i++)
+ {
+    fprintf(
+        eczane.BAS[i][1],
+        eczane.BAS[i][0],
+        eczane.SSR[i][0]
+    );
+ }
+ 
+
+}
+
+void DosyadanYule(){
+    FILE *fp =fopen("ilaclar.txt","r");
+    if (fp == NULL)
+    {
+        return;
+    }
+    toplamİlacSayisi = 0;
+}
+void tutorialFunc(){
+    printf("\n--- NASIL KULLANILIR ---\n");
+    printf("1. Ilac Girisi menusunden yeni ilac ekleyin.\n");
+    printf("2. Sistem otomatik barkod atayacaktir.\n");
+    printf("3. Eklediginiz ilaclar 'ilaclar.txt' dosyasina kaydedilir.\n");
+    printf("4. Stok Listeleme kismindan durumu gorebilirsiniz.\n\n");
+}
+void StokListele(){
     
 }
 void secim1(){
@@ -50,7 +98,7 @@ void secim1(){
     scanf("%d",&tutorial);
     if (tutorial == 1)
     {
-      secim1İlacgiris();
+      StokListele();
     }
     else if (tutorial == 2)
     {
@@ -61,7 +109,7 @@ void secim1(){
         printf("lütfen geçerli bir değer giriniz");
         if (tutorial == 1)
         {
-            secim1İlacgiris();
+            StokListele();
         }
         else if (tutorial == 2)
         {
@@ -83,8 +131,9 @@ void menu (){
     bool secimdogrulayci = false;
 
     while (secimdogrulayci == false)
-    {
-        printf("Merhaba İlaç Takip Sistemine HOŞ GELDİNİZİ ! \n İlaç stokları için 1'e basınız \n İlaç girişi için 2'ye basınız : \n Çıkış için 3'e basınız : ");
+    {   printf("*******************************************************\n");
+        printf("Merhaba İlaç Takip Sistemine HOŞ GELDİNİZİ ! \n İlaç stokları için 1'e basınız \n İlaç girişi için 2'ye basınız : \n Çıkış için 3'e basınız : \n");
+        printf("*******************************************************\n");
         scanf("%d",&secim);
         if (secim == 1)
         {
