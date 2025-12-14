@@ -55,30 +55,97 @@ void barkodÜret(char* hedefString){
 }
 
 void DosyayaKaydet(){
- FILE *fp = fopen("ilaclar.txt","w");    
- if (fp == NULL)
+    //Dosyayı yoksa oluşturuyor vara açıyor 
+    // ilacDefteri burda dosya bilgilerini tutar yani git ilaclar.txt dosyasını akldında tut demek gibi bişey %d ie aynı mantık
+ FILE *ilacDefteri = fopen("ilaclar.txt","a");   
+ //açılıp açılmadığını kontrol ediyoruz 
+ if (ilacDefteri == NULL)
  {
     return;
  }
- for (int i = 0; i < toplamİlacSayisi; i++)
- {
-    fprintf(
-        eczane.BAS[i][1],
-        eczane.BAS[i][0],
-        eczane.SSR[i][0]
+ //diziler 0 dan başladığı için -1 dememiz lazım çünkü ilaç kaydını 1 den başlattık
+ int sonEklenenIndex = toplamİlacSayisi - 1;
+
+    fprintf(ilacDefteri, "%s %s %s %d %d %d %.2f\n",
+    eczane.BAS[sonEklenenIndex][BARKOD],
+    eczane.BAS[sonEklenenIndex][ISIM],
+    eczane.BAS[sonEklenenIndex][SKT],
+    eczane.SSR[sonEklenenIndex][STOK],
+    eczane.SSR[sonEklenenIndex][SOGUK],
+    eczane.SSR[sonEklenenIndex][RECETE],
+    eczane.fiyat[sonEklenenIndex]
     );
- }
- 
-
+   fclose(ilacDefteri);
+   printf("Yeni ilaçlar Eklendi");
 }
+void DosyadanYuke(){
 
-void DosyadanYule(){
-    FILE *fp =fopen("ilaclar.txt","r");
-    if (fp == NULL)
+    //Mantığına bakmadım
+    FILE *ilacDefteri =fopen("ilaclar.txt","r");
+    if (ilacDefteri == NULL)
     {
         return;
     }
     toplamİlacSayisi = 0;
+    while (!feof(ilacDefteri)) //Dosya bitmediği sürece okumaya devam et demektir ! kullanılması sebebi while döngüsü koşul yanlış olduğu sürece çalışmasıdır burda feof fonksiyonu dosya sonuna gelmediği sürece bize 1 verecek bu yüzden 1 alıp 0
+    {
+        int sonuc = fscanf(
+            ilacDefteri,"%s %s %s %d %d %d %f \n",
+            eczane.BAS[toplamİlacSayisi][BARKOD], // char türünde & ihtiyaç yok çünkü dizinin ismi o dizinin başlangıç adresisidr
+            eczane.BAS[toplamİlacSayisi][ISIM],
+            eczane.BAS[toplamİlacSayisi][SKT],
+            &eczane.SSR[toplamİlacSayisi][STOK], //& gerekli çünkü dosyadaki verileri rame yazıyoruz yani bir nevi rame kaydediyoruz
+            &eczane.SSR[toplamİlacSayisi][SOGUK], 
+            &eczane.SSR[toplamİlacSayisi][RECETE],
+            &eczane.fiyat[toplamİlacSayisi]       
+        );
+        if (sonuc == 7) // 7 tane değer girildiğine emin oluyoruz
+        {
+            toplamİlacSayisi++;
+        }
+        
+    }
+    fclose(ilacDefteri);
+    printf("%d adet ilac kaydı yüklendi\n",toplamİlacSayisi);
+    
+}
+void secim2Tutorial (){
+
+    //MAntığına bakmadım
+   printf("\n--- YENI ILAC GIRISI ---\n"); 
+   if (toplamİlacSayisi >= 100)
+   {
+     printf("Hata : Stok Kapasitesi dolu ! (max 100) \n");
+     return;
+   }
+
+    barkodÜret(eczane.BAS[toplamİlacSayisi][BARKOD]);
+    printf("Barkod atandı : %s \n",eczane.BAS[toplamİlacSayisi][BARKOD]);
+
+    printf("Ilac Ismi (Bosluksuz giriniz): ");
+    scanf("%s", eczane.BAS[toplamİlacSayisi][ISIM]);
+
+    printf("Son Kullanma Tarihi (GG.AA.YYYY): ");
+    scanf("%s", eczane.BAS[toplamİlacSayisi][SKT]);
+   
+    printf("Stok Adedi: ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][STOK]);
+   
+    printf("Soguk Zincir mi? (1: Evet, 0: Hayir): ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][SOGUK]);
+
+    printf("Receteli mi? (1: Evet, 0: Hayir): ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][RECETE]);
+
+    printf("Birim Fiyati: ");
+    scanf("%f", &eczane.fiyat[toplamİlacSayisi]);
+
+    toplamİlacSayisi++; // Sayacı 1 artır
+    
+    DosyayaKaydet(); // Her eklemeden sonra dosyayı güncelle
+    printf("Ilac basariyla eklendi!\n");
+
+   
 }
 void tutorialFunc(){
     printf("\n--- NASIL KULLANILIR ---\n");
@@ -86,19 +153,73 @@ void tutorialFunc(){
     printf("2. Sistem otomatik barkod atayacaktir.\n");
     printf("3. Eklediginiz ilaclar 'ilaclar.txt' dosyasina kaydedilir.\n");
     printf("4. Stok Listeleme kismindan durumu gorebilirsiniz.\n\n");
+    secim2Tutorial();
 }
 void StokListele(){
-    
+    printf("\n%-15s %-15s %-12s %-6s %-8s %-8s %-8s\n", 
+           "BARKOD", "ISIM", "SKT", "STOK", "SOGUK", "RECETE", "FIYAT");
+    printf("------------------------------------------------------------------------------\n");
+
+    for(int i = 0; i < toplamİlacSayisi; i++) {
+        printf("%-15s %-15s %-12s %-6d %-8s %-8s %-8.2f\n",
+            eczane.BAS[i][BARKOD],
+            eczane.BAS[i][ISIM],
+            eczane.BAS[i][SKT],
+            eczane.SSR[i][STOK],
+            eczane.SSR[i][SOGUK] == 1 ? "EVET" : "HAYIR", // Ternary If (Kısa if yapısı) mantığına bak
+            eczane.SSR[i][RECETE] == 1 ? "EVET" : "HAYIR",
+            eczane.fiyat[i]
+        );
+    }
+    printf("\n");
 }
 void secim1(){
     printf("İlaç Stokları Bölümüne HOŞGELDİNİZ ! \n"); 
-    int tutorial = 0;
+    StokListele();
+}
+void ilacgiris(){
+    printf("\n--- YENI ILAC GIRISI ---\n"); 
+   if (toplamİlacSayisi >= 100)
+   {
+     printf("Hata : Stok Kapasitesi dolu ! (max 100) \n");
+     return;
+   }
+
+    barkodÜret(eczane.BAS[toplamİlacSayisi][BARKOD]);
+    printf("Barkod atandı : %s \n",eczane.BAS[toplamİlacSayisi][BARKOD]);
+
+    printf("Ilac Ismi (Bosluksuz giriniz): ");
+    scanf("%s", eczane.BAS[toplamİlacSayisi][ISIM]);
+
+    printf("Son Kullanma Tarihi (GG.AA.YYYY): ");
+    scanf("%s", eczane.BAS[toplamİlacSayisi][SKT]);
+   
+    printf("Stok Adedi: ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][STOK]);
+   
+    printf("Soguk Zincir mi? (1: Evet, 0: Hayir): ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][SOGUK]);
+
+    printf("Receteli mi? (1: Evet, 0: Hayir): ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][RECETE]);
+
+    printf("Birim Fiyati: ");
+    scanf("%f", &eczane.fiyat[toplamİlacSayisi]);
+
+    toplamİlacSayisi++; // Sayacı 1 artır
+    
+    DosyayaKaydet(); // Her eklemeden sonra dosyayı güncelle
+    printf("Ilac basariyla eklendi!\n");
+
+}
+void secim2 (){    
+int tutorial = 0;
     printf("Merhaba daha önceden programı kullanmışmıydınız ? \n ");
     printf("Kullandıysanız 1 'e basınız kullanmadıysanız ve Yardıma ihtiyacınız varsa 2'ye basınız\n");
     scanf("%d",&tutorial);
     if (tutorial == 1)
     {
-      StokListele();
+        ilacgiris();
     }
     else if (tutorial == 2)
     {
@@ -109,7 +230,7 @@ void secim1(){
         printf("lütfen geçerli bir değer giriniz");
         if (tutorial == 1)
         {
-            StokListele();
+           ilacgiris();
         }
         else if (tutorial == 2)
         {
@@ -121,9 +242,41 @@ void secim1(){
         }
         
     }
-}
-void secim2 (){
-    printf("İlaç girişi kısmına HOŞGELDİNİZ");
+
+   printf("\n--- YENI ILAC GIRISI ---\n"); 
+   if (toplamİlacSayisi >= 100)
+   {
+     printf("Hata : Stok Kapasitesi dolu ! (max 100) \n");
+     return;
+   }
+
+    barkodÜret(eczane.BAS[toplamİlacSayisi][BARKOD]);
+    printf("Barkod atandı : %s \n",eczane.BAS[toplamİlacSayisi][BARKOD]);
+
+    printf("Ilac Ismi (Bosluksuz giriniz): ");
+    scanf("%s", eczane.BAS[toplamİlacSayisi][ISIM]);
+
+    printf("Son Kullanma Tarihi (GG.AA.YYYY): ");
+    scanf("%s", eczane.BAS[toplamİlacSayisi][SKT]);
+   
+    printf("Stok Adedi: ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][STOK]);
+   
+    printf("Soguk Zincir mi? (1: Evet, 0: Hayir): ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][SOGUK]);
+
+    printf("Receteli mi? (1: Evet, 0: Hayir): ");
+    scanf("%d", &eczane.SSR[toplamİlacSayisi][RECETE]);
+
+    printf("Birim Fiyati: ");
+    scanf("%f", &eczane.fiyat[toplamİlacSayisi]);
+
+    toplamİlacSayisi++; // Sayacı 1 artır
+    
+    DosyayaKaydet(); // Her eklemeden sonra dosyayı güncelle
+    printf("Ilac basariyla eklendi!\n");
+
+   
 }
 void menu (){
 
@@ -158,6 +311,7 @@ void menu (){
 }
 int main() {
     SetConsoleOutputCP(65001);
+    DosyadanYuke();
     menu();
     return 0;
 }
