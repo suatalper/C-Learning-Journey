@@ -53,7 +53,6 @@ void barkodÜret(char* hedefString){
     }
     strcpy(hedefString, temp);
 }
-
 void DosyayaKaydet(){
     //Dosyayı yoksa oluşturuyor vara açıyor 
     // ilacDefteri burda dosya bilgilerini tutar yani git ilaclar.txt dosyasını akldında tut demek gibi bişey %d ie aynı mantık
@@ -79,8 +78,7 @@ void DosyayaKaydet(){
    printf("Yeni ilaçlar Eklendi");
 }
 void DosyadanYuke(){
-
-    //Mantığına bakmadım
+    
     FILE *ilacDefteri =fopen("ilaclar.txt","r");
     if (ilacDefteri == NULL)
     {
@@ -110,8 +108,6 @@ void DosyadanYuke(){
     
 }
 void secim2Tutorial (){
-
-    //MAntığına bakmadım
    printf("\n--- YENI ILAC GIRISI ---\n"); 
    if (toplamİlacSayisi >= 100)
    {
@@ -166,7 +162,7 @@ void StokListele(){
             eczane.BAS[i][ISIM],
             eczane.BAS[i][SKT],
             eczane.SSR[i][STOK],
-            eczane.SSR[i][SOGUK] == 1 ? "EVET" : "HAYIR", // Ternary If (Kısa if yapısı) mantığına bak
+            eczane.SSR[i][SOGUK] == 1 ? "EVET" : "HAYIR", //  Kısa if yapısı
             eczane.SSR[i][RECETE] == 1 ? "EVET" : "HAYIR",
             eczane.fiyat[i]
         );

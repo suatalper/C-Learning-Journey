@@ -1,0 +1,3 @@
+insnalara ilaç giri yapmadan direkt olarak stok sorgulama sekmesine gönderecek bir kod yaz
+ilaç satış sayfası ekle 
+class ve kütühane mantğinı araştır 
