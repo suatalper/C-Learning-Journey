@@ -33,6 +33,13 @@ A program related to calculating differences in averages.
 
 The `C projects` directory contains various small exercises, experiments, and code snippets created during the learning process.
 
+### 6. Sales Tracking System (final_practice)
+
+A console-based application to track product sales.
+
+- **Features**: Add new sales (product name and price), view sales history, persistent storage in text file.
+- **Location**: `final_practice/main.c`
+
 ## Getting Started
 
 To run any of these projects, you will need a C compiler like `gcc`.

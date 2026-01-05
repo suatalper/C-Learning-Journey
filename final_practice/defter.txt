@@ -1,0 +1,4 @@
+Ürün ismi : Kasarli Tost
+ Ürün fiyatı : 45.000000 
+Ürün ismi : Sucuklu Tost
+ Ürün fiyatı : 25.000000
